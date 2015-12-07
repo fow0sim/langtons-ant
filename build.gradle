@@ -1,0 +1,31 @@
+apply plugin: 'java'
+
+version = '0.1.0'
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Langdons Ant',
+                   'Implementation-Version': version,
+                   'Main-Class': 'eu.simmig.langdonant.LangdonAntApplication'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
+}

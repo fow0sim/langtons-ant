@@ -12,14 +12,18 @@ public class AntRunner {
     public void run() {
         frame = new JFrame("Langdons Ant");
         buildScreen(frame);
+        centerFrame(frame);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    protected void centerFrame(JFrame frame) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;
         frame.setPreferredSize(new Dimension(width/2, height/2));
         frame.setLocation(width/4, height/4);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
     }
 
     protected void buildScreen(JFrame frame) {

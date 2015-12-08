@@ -53,7 +53,7 @@ public class AntRunner {
 
     protected void startAntRunner() {
         grid.setLineWrap(true);
-        grid.append("Now you have to add the implementation\n");
+        grid.append("Die Ameise hat heute frei. :P\n");
     }
 
 }

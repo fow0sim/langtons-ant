@@ -16,3 +16,8 @@ hs_err_pid*
 build
 *.iml
 gradle.properties
+.class
+.metadata
+.project
+.settings
+.classpath

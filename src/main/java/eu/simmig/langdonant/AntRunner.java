@@ -9,20 +9,21 @@ public class AntRunner {
     public static final int LOOPS = 100;
 
     JFrame frame;
-    Container canvas;
+    AntPlayground canvas;
     GridSpace grid;
     LangdonAnt ant;
 
     public void run() {
         frame = new JFrame("Langdons Ant");
-        buildScreen(frame);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int height = screenSize.height;
         int width = screenSize.width;
+        int scale = 4;
+        grid = new GridSpace(width/(2 * scale), height/(2 * scale));
+        ant = new LangdonAnt(width/(4 * scale), height/(4 * scale), grid);
+        buildScreen(frame);
         frame.setPreferredSize(new Dimension(width/2, height/2));
         frame.setLocation(width/4, height/4);
-        grid = new GridSpace(width/2, height/2);
-        ant = new LangdonAnt(width/4, height/4, grid);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
@@ -44,7 +45,7 @@ public class AntRunner {
             }
         });
         Container buttons = new Container();
-        canvas = new JTextArea();
+        canvas = new AntPlayground(grid);
         buttons.setLayout(new FlowLayout());
         buttons.add(runButton);
         buttons.add(quitButton);
@@ -54,15 +55,14 @@ public class AntRunner {
     }
 
     protected void startAntRunner() {
-        for (int i = 0; i < LOOPS; i += 1) {
-            DrawPoint point = ant.step();
-            Color color = (point.getColor() == GridSpace.BLACK) ? Color.black : Color.white;
-            Graphics g = canvas.getGraphics();
-            g.setColor(color);
-            g.drawLine(point.getX(), point.getY(), point.getX(), point.getY());
-            g.dispose();
+        try {
+            for (int i = 0; i < LOOPS; i += 1) {
+                DrawPoint point = ant.step();
+            }
+        } catch (IndexOutOfBoundsException ex) {
+            grid.setDidEscape(true);
         }
+        canvas.repaint();
     }
-
 
 }

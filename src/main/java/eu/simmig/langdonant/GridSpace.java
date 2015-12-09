@@ -16,6 +16,15 @@ public class GridSpace {
         grid = new int[width][height];
     }
 
+    public void init() {
+        for (int i = 0; i < width; i += 1) {
+            for (int j = 0; j < height; j += 1) {
+                grid[i][j] = WHITE;
+            }
+        }
+        setDidEscape(false);
+    }
+
     public int switchColor(int x, int y) {
         int newColor = (getColor(x, y) == BLACK) ? WHITE : BLACK;
         setColor(x, y, newColor);

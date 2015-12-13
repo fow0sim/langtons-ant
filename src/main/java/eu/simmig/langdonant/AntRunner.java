@@ -6,9 +6,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class AntRunner implements ActionListener {
-    public static final int LOOPS = 1;
+    public static final int LOOPS = 30;
     public static final int DELAY = 50;
     public static final int SCALE = 4;
+    public static final String RULE = "RL";
 
     JFrame frame;
     AntPlayground canvas;
@@ -16,6 +17,10 @@ public class AntRunner implements ActionListener {
     int playgroundHeight;
     JButton runButton;
     JButton stopButton;
+    JLabel status;
+    JTextField counter;
+    JTextField rule;
+    JTextField loops;
     GridSpace grid;
     LangdonAnt ant;
     private Timer timer;
@@ -65,21 +70,64 @@ public class AntRunner implements ActionListener {
         buttons.add(runButton);
         buttons.add(stopButton);
         buttons.add(quitButton);
+        status = new JLabel("Ant is resting");
+        Container bottomPane = new Container();
+        bottomPane.setLayout(new BorderLayout());
+        bottomPane.add(buttons, BorderLayout.CENTER);
+        bottomPane.add(status, BorderLayout.SOUTH);
         Container contents = frame.getContentPane();
-        contents.add(buttons, BorderLayout.SOUTH);
+        contents.add(bottomPane, BorderLayout.SOUTH);
+        contents.add(buildControls(), BorderLayout.WEST);
         contents.add(canvas, BorderLayout.CENTER);
+    }
+
+    protected Container buildControls() {
+        Container controls = new Container();
+        int width = 150;
+        int height = 24;
+        Font labelFont = new Font("Helvetica", Font.BOLD, 12);
+        Dimension size = new Dimension(width, height);
+        controls.setLayout(new FlowLayout());
+        controls.setPreferredSize(new Dimension(width, 1));
+        JLabel counterLabel = new JLabel("Iterations");
+        counterLabel.setPreferredSize(size);
+        counterLabel.setVerticalAlignment(JLabel.BOTTOM);
+        counterLabel.setFont(labelFont);
+        counter = new JTextField("0");
+        counter.setPreferredSize(size);
+        counter.setEditable(false);
+        JLabel ruleLabel = new JLabel("Rule");
+        ruleLabel.setPreferredSize(size);
+        rule = new JTextField(RULE);
+        rule.setPreferredSize(size);
+        ruleLabel.setVerticalAlignment(JLabel.BOTTOM);
+        ruleLabel.setFont(labelFont);
+        JLabel loopLabel = new JLabel("Loops");
+        loopLabel.setPreferredSize(size);
+        loopLabel.setVerticalAlignment(JLabel.BOTTOM);
+        loopLabel.setFont(labelFont);
+        loops = new JTextField(Integer.toString(LOOPS));
+        loops.setPreferredSize(size);
+        controls.add(counterLabel);
+        controls.add(counter);
+        controls.add(ruleLabel);
+        controls.add(rule);
+        controls.add(loopLabel);
+        controls.add(loops);
+        return controls;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
-            for (int i = 0; i < LOOPS; i += 1) {
-                DrawPoint point = ant.step();
-            }
+            ant.step();
+            status.setText("Ant is moving");
+            counter.setText(Integer.toString(ant.getIterations()));
         } catch (IndexOutOfBoundsException ex) {
             grid.setDidEscape(true);
             stopAntRunner();
             timer = null;
+            status.setText("Ant has escaped grid");
         }
         canvas.repaint();
     }
@@ -89,16 +137,23 @@ public class AntRunner implements ActionListener {
         runButton.setEnabled(false);
         if (timer == null) {
             grid.init();
-            ant = new LangdonAnt(playgroundWidth / 2, playgroundHeight / 2, grid);
+            ant = new LangdonAnt(grid.getWidth() / 2, grid.getHeight() / 2, grid, rule.getText());
+            ant.setLoops(Integer.parseInt(loops.getText()));
             timer = new Timer(DELAY, this);
+            rule.setEditable(false);
+            loops.setEditable(false);
         }
         timer.start();
+    }
+
+    protected void resetAntRunner() {
     }
 
     protected void stopAntRunner() {
         stopButton.setEnabled(false);
         runButton.setEnabled(true);
         timer.stop();
+        status.setText("Ant is resting");
     }
 
 }

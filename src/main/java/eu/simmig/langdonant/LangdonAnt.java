@@ -5,32 +5,51 @@ public class LangdonAnt {
     public static final int EAST = 1;
     public static final int SOUTH = 2;
     public static final int WEST = 3;
+    public static final String DEFAULT_RULE = "RL";
 
     private int direction = NORTH;
     private int x;
     private int y;
-    private int lastColor;
+    private int iterations = 0;
+    private int loops = 1;
+    private String rule;
     private GridSpace grid;
 
-    public LangdonAnt(int x, int y, GridSpace gridSpace) {
+    public LangdonAnt(int x, int y, GridSpace gridSpace, String rule) {
         this.x = x;
         this.y = y;
         this.grid = gridSpace;
+        this.rule = rule.trim();
     }
 
-    public DrawPoint step() {
-        DrawPoint point = new DrawPoint();
-        point.setX(x);
-        point.setY(y);
-        if (fieldColor() == GridSpace.WHITE) {
-            rotateRight();
-        } else {
-            rotateLeft();
+    public LangdonAnt(int x, int y, GridSpace gridSpace) {
+        this(x, y, gridSpace, DEFAULT_RULE);
+    }
+
+    public void step() {
+        for (int i = 0; i < getLoops(); i += 1) {
+            switch (rule.charAt(fieldColor())) {
+            case 'R':
+            case 'r':
+            case '1':
+                rotateRight();
+                break;
+            case 'L':
+            case 'l':
+            case '0':
+                rotateLeft();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid rule: " + rule);
         }
-        lastColor = grid.switchColor(x, y);
-        point.setColor(lastColor);
+        switchColor();
         move();
-        return point;
+        }
+    }
+
+    public void switchColor() {
+        int colorCount = rule.length();
+        grid.setColor(x, y, (fieldColor() + 1) % colorCount);
     }
 
     public int fieldColor() {
@@ -60,10 +79,22 @@ public class LangdonAnt {
                 y -= 1;
                 break;
         }
+        iterations += 1;
     }
 
-    public String toString() {
-        return "Langdon Ant: { x: " + x + ", y: " + y + ", direction: " + direction
-                + ", color: " + lastColor + " }";
+    public int getIterations() {
+        return iterations;
+    }
+
+    public String getRule() {
+        return rule;
+    }
+
+    public int getLoops() {
+        return loops;
+    }
+
+    public void setLoops(int loops) {
+        this.loops = loops;
     }
 }

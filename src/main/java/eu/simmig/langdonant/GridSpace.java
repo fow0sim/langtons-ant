@@ -1,9 +1,6 @@
 package eu.simmig.langdonant;
 
 public class GridSpace {
-    public static final int WHITE = 0;
-    public static final int BLACK = 1;
-
     private int width;
     private int height;
     private int grid[][];
@@ -19,16 +16,10 @@ public class GridSpace {
     public void init() {
         for (int i = 0; i < width; i += 1) {
             for (int j = 0; j < height; j += 1) {
-                grid[i][j] = WHITE;
+                grid[i][j] = 0;
             }
         }
         setDidEscape(false);
-    }
-
-    public int switchColor(int x, int y) {
-        int newColor = (getColor(x, y) == BLACK) ? WHITE : BLACK;
-        setColor(x, y, newColor);
-        return newColor;
     }
 
     public void setColor(int x, int y, int color) {

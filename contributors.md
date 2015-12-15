@@ -1,2 +1,1 @@
 Thomas Simmig
-Anke Arnold

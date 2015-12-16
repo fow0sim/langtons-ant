@@ -12,16 +12,17 @@ public class AntRunner implements ActionListener {
     public static final String RULE = "RL";
 
     JFrame frame;
-    AntPlayground canvas;
+    AntScreen canvas;
     int playgroundWidth;
     int playgroundHeight;
     JButton runButton;
     JButton stopButton;
+    JButton resetButton;
     JLabel status;
     JTextField counter;
     JTextField rule;
     JTextField loops;
-    GridSpace grid;
+    AntPlayground grid;
     LangdonAnt ant;
     private Timer timer;
 
@@ -57,6 +58,13 @@ public class AntRunner implements ActionListener {
                 stopAntRunner();
             }
         });
+        resetButton = new JButton("Reset");
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetAntRunner();
+            }
+        });
         JButton quitButton = new JButton("Quit");
         quitButton.addActionListener(new ActionListener() {
             @Override
@@ -65,10 +73,11 @@ public class AntRunner implements ActionListener {
             }
         });
         Container buttons = new Container();
-        canvas = new AntPlayground(grid);
+        canvas = new AntScreen(grid);
         buttons.setLayout(new FlowLayout());
         buttons.add(runButton);
         buttons.add(stopButton);
+        buttons.add(resetButton);
         buttons.add(quitButton);
         status = new JLabel("Ant is resting");
         Container bottomPane = new Container();
@@ -126,34 +135,40 @@ public class AntRunner implements ActionListener {
         } catch (IndexOutOfBoundsException ex) {
             grid.setDidEscape(true);
             stopAntRunner();
-            timer = null;
+            ant = null;
             status.setText("Ant has escaped grid");
         }
         canvas.repaint();
     }
 
     protected void startAntRunner() {
-        stopButton.setEnabled(true);
-        runButton.setEnabled(false);
-        if (timer == null) {
+        toggleControls();
+        if (ant == null) {
             grid.init();
             ant = new LangdonAnt(grid.getWidth() / 2, grid.getHeight() / 2, grid, rule.getText());
             ant.setLoops(Integer.parseInt(loops.getText()));
             timer = new Timer(DELAY, this);
-            rule.setEditable(false);
-            loops.setEditable(false);
         }
         timer.start();
     }
 
     protected void resetAntRunner() {
+        ant = null;
     }
 
     protected void stopAntRunner() {
-        stopButton.setEnabled(false);
-        runButton.setEnabled(true);
+        toggleControls();
         timer.stop();
         status.setText("Ant is resting");
+    }
+
+    protected void toggleControls() {
+        boolean base = runButton.isEnabled();
+        runButton.setEnabled(!base);
+        stopButton.setEnabled(base);
+        resetButton.setEnabled(!base);
+        rule.setEditable(!base);
+        loops.setEditable(!base);
     }
 
 }

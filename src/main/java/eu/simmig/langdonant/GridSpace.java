@@ -1,6 +1,6 @@
 package eu.simmig.langdonant;
 
-public class GridSpace {
+public class GridSpace implements AntPlayground {
     private int width;
     private int height;
     private int grid[][];
@@ -22,11 +22,11 @@ public class GridSpace {
         setDidEscape(false);
     }
 
-    public void setColor(int x, int y, int color) {
+    public void setColorAt(int x, int y, int color) {
         grid[x][y] = color;
     }
 
-    public int getColor(int x, int y) {
+    public int getColorAt(int x, int y) {
         return grid[x][y];
     }
 

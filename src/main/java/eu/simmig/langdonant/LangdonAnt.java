@@ -13,9 +13,9 @@ public class LangdonAnt {
     private int iterations = 0;
     private int loops = 1;
     private String rule;
-    private GridSpace grid;
+    private AntPlayground grid;
 
-    public LangdonAnt(int x, int y, GridSpace gridSpace, String rule) {
+    public LangdonAnt(int x, int y, AntPlayground gridSpace, String rule) {
         this.x = x;
         this.y = y;
         this.grid = gridSpace;
@@ -49,11 +49,11 @@ public class LangdonAnt {
 
     public void switchColor() {
         int colorCount = rule.length();
-        grid.setColor(x, y, (fieldColor() + 1) % colorCount);
+        grid.setColorAt(x, y, (fieldColor() + 1) % colorCount);
     }
 
     public int fieldColor() {
-        return grid.getColor(x, y);
+        return grid.getColorAt(x, y);
     }
 
     public void rotateLeft() {

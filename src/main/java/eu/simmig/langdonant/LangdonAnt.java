@@ -67,16 +67,16 @@ public class LangdonAnt {
     public void move() {
         switch (direction) {
             case NORTH:
-                x -= 1;
+                y -= 1;
                 break;
             case EAST:
-                y += 1;
-                break;
-            case SOUTH:
                 x += 1;
                 break;
+            case SOUTH:
+                y += 1;
+                break;
             case WEST:
-                y -= 1;
+                x -= 1;
                 break;
         }
         iterations += 1;
@@ -96,5 +96,17 @@ public class LangdonAnt {
 
     public void setLoops(int loops) {
         this.loops = loops;
+    }
+
+    public int getDirection() {
+        return direction;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

@@ -147,6 +147,7 @@ public class AntRunner implements ActionListener {
             grid.init();
             ant = new LangdonAnt(grid.getWidth() / 2, grid.getHeight() / 2, grid, rule.getText());
             ant.setLoops(Integer.parseInt(loops.getText()));
+            canvas.setColorCount(rule.getText().length());
             timer = new Timer(DELAY, this);
         }
         timer.start();

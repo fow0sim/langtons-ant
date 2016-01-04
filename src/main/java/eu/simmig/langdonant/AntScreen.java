@@ -7,10 +7,10 @@ import java.awt.event.ComponentListener;
 
 public class AntScreen extends JPanel implements ComponentListener {
     public static final int SCALE = 4;
-    public static Color COLOR_MAP[] = {Color.WHITE, Color.BLUE, Color.GREEN,
-            Color.CYAN, Color.ORANGE, Color.YELLOW, Color.BLACK};
+    public static Color COLOR_MAP[] = {Color.WHITE, Color.BLACK};
 
     private AntPlayground grid;
+    private int colorCount;
 
     public AntScreen(AntPlayground grid) {
         this.grid = grid;
@@ -52,6 +52,34 @@ public class AntScreen extends JPanel implements ComponentListener {
     @Override
     public void componentHidden(ComponentEvent e) {
 
+    }
+
+    public int getColorCount() {
+        return colorCount;
+    }
+
+    public void setColorCount(int colorCount) {
+        COLOR_MAP = computeColorMap(colorCount);
+        this.colorCount = colorCount;
+    }
+
+    private Color[] computeColorMap(int count) {
+        if (count < 2) {
+            throw new IllegalArgumentException("Count must be at least 2");
+        }
+        Color[] colorMap = new Color[count];
+        colorMap[0] = Color.WHITE;
+        colorMap[count - 1] = Color.BLACK;
+        if (count > 2) {
+            for (int i = 1; i < count - 1; i += 1) {
+                int steps = count - 2;
+                float hue = 0.3f + (i - 1) * (0.5f / steps);
+                float saturation = 0.8f + (i - 1) * (0.2f / steps) ;
+                float brightness = 0.8f + (i - 1) * (0.2f / steps) ;
+                colorMap[i] = Color.getHSBColor(hue, saturation, brightness);
+            }
+        }
+        return colorMap;
     }
 }
 

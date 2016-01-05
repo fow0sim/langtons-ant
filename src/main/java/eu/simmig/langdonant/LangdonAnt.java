@@ -12,31 +12,52 @@ public class LangdonAnt {
     private int y;
     private int iterations = 0;
     private int loops = 1;
+    private boolean outOfBounds;
     private String rule;
-    private AntPlayground grid;
+    private AntPlane antPlane;
 
-    public LangdonAnt(int x, int y, AntPlayground gridSpace, String rule) {
+    public LangdonAnt(int x, int y, AntPlane antPlane, String rule) {
         this.x = x;
         this.y = y;
-        this.grid = gridSpace;
-        this.rule = rule.trim();
+        this.antPlane = antPlane;
+        setRule(rule);
+        setOutOfBounds(false);
     }
 
-    public LangdonAnt(int x, int y, GridSpace gridSpace) {
-        this(x, y, gridSpace, DEFAULT_RULE);
+    public LangdonAnt(int x, int y, AntPlane antPlane) {
+        this(x, y, antPlane, DEFAULT_RULE);
+    }
+
+    public LangdonAnt(int width, int height, String rule) {
+        this(width / 2, height / 2, new AntYard(width, height), rule);
+    }
+
+    public LangdonAnt(int width, int height) {
+        this(width, height, DEFAULT_RULE);
     }
 
     public void step() {
-        for (int i = 0; i < getLoops(); i += 1) {
-            switch (rule.charAt(fieldColor())) {
+        step(getLoops());
+    }
+
+    public void step(int loops) {
+        if (!isOutOfBounds()) {
+            try {
+                for (int i = 0; i < loops; i += 1) {
+                    doOneStep();
+                }
+            } catch (IndexOutOfBoundsException ex) {
+                setOutOfBounds(true);
+            }
+        }
+    }
+
+    protected void doOneStep() {
+        switch (rule.charAt(fieldColor())) {
             case 'R':
-            case 'r':
-            case '1':
                 rotateRight();
                 break;
             case 'L':
-            case 'l':
-            case '0':
                 rotateLeft();
                 break;
             default:
@@ -44,27 +65,26 @@ public class LangdonAnt {
         }
         switchColor();
         move();
-        }
     }
 
-    public void switchColor() {
+    protected void switchColor() {
         int colorCount = rule.length();
-        grid.setColorAt(x, y, (fieldColor() + 1) % colorCount);
+        antPlane.setColorAt(x, y, (fieldColor() + 1) % colorCount);
     }
 
     public int fieldColor() {
-        return grid.getColorAt(x, y);
+        return antPlane.getColorAt(x, y);
     }
 
-    public void rotateLeft() {
+    protected void rotateLeft() {
         direction = (direction + 3) % 4;
     }
 
-    public void rotateRight() {
+    protected void rotateRight() {
         direction = (direction + 1) % 4;
     }
 
-    public void move() {
+    protected void move() {
         switch (direction) {
             case NORTH:
                 y -= 1;
@@ -90,6 +110,29 @@ public class LangdonAnt {
         return rule;
     }
 
+    public void setRule(String rule) {
+        String newRule = "";
+        for (int i = 0; i < rule.length(); i += 1) {
+            switch (rule.charAt(i)) {
+                case 'R':
+                case 'r':
+                case '1':
+                    newRule += "R";
+                    break;
+                case 'L':
+                case 'l':
+                case '0':
+                    newRule += "L";
+                    break;
+                case ' ':
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid rule: " + rule);
+            }
+        }
+        this.rule = newRule;
+    }
+
     public int getLoops() {
         return loops;
     }
@@ -109,4 +152,17 @@ public class LangdonAnt {
     public int getY() {
         return y;
     }
+
+    public AntPlane getAntPlane() {
+        return antPlane;
+    }
+
+    public boolean isOutOfBounds() {
+        return outOfBounds;
+    }
+
+    protected void setOutOfBounds(boolean outOfBounds) {
+        this.outOfBounds = outOfBounds;
+    }
+
 }

@@ -22,7 +22,7 @@ public class AntRunner implements ActionListener {
     JTextField counter;
     JTextField rule;
     JTextField loops;
-    AntPlayground grid;
+    AntPlane antPlane;
     LangdonAnt ant;
     private Timer timer;
 
@@ -33,7 +33,7 @@ public class AntRunner implements ActionListener {
         int width = screenSize.width;
         playgroundHeight = height / (2 * SCALE);
         playgroundWidth = width / (2 * SCALE);
-        grid = new GridSpace(playgroundWidth, playgroundHeight);
+        antPlane = new AntYard(playgroundWidth, playgroundHeight);
         buildScreen(frame);
         frame.setPreferredSize(new Dimension(width/2, height/2));
         frame.setLocation(width/4, height/4);
@@ -73,7 +73,7 @@ public class AntRunner implements ActionListener {
             }
         });
         Container buttons = new Container();
-        canvas = new AntScreen(grid);
+        canvas = new AntScreen(antPlane);
         buttons.setLayout(new FlowLayout());
         buttons.add(runButton);
         buttons.add(stopButton);
@@ -128,15 +128,14 @@ public class AntRunner implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            ant.step();
-            status.setText("Ant is moving");
-            counter.setText(Integer.toString(ant.getIterations()));
-        } catch (IndexOutOfBoundsException ex) {
-            grid.setDidEscape(true);
+        ant.step();
+        if (ant.isOutOfBounds()) {
             stopAntRunner();
             ant = null;
-            status.setText("Ant has escaped grid");
+            status.setText("Ant has escaped plane");
+        } else {
+            status.setText("Ant is moving");
+            counter.setText(Integer.toString(ant.getIterations()));
         }
         canvas.repaint();
     }
@@ -144,8 +143,8 @@ public class AntRunner implements ActionListener {
     protected void startAntRunner() {
         toggleControls();
         if (ant == null) {
-            grid.init();
-            ant = new LangdonAnt(grid.getWidth() / 2, grid.getHeight() / 2, grid, rule.getText());
+            antPlane.init();
+            ant = new LangdonAnt(antPlane.getWidth() / 2, antPlane.getHeight() / 2, antPlane, rule.getText());
             ant.setLoops(Integer.parseInt(loops.getText()));
             canvas.setColorCount(rule.getText().length());
             timer = new Timer(DELAY, this);

@@ -9,10 +9,10 @@ public class AntScreen extends JPanel implements ComponentListener {
     public static final int SCALE = 4;
     public static Color COLOR_MAP[] = {Color.WHITE, Color.BLACK};
 
-    private AntPlayground grid;
+    private AntPlane grid;
     private int colorCount;
 
-    public AntScreen(AntPlayground grid) {
+    public AntScreen(AntPlane grid) {
         this.grid = grid;
         addComponentListener(this);
     }
